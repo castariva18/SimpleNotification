@@ -21,48 +21,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.btn_set);
-        findViewById(R.id.btn_cancel);
 
+        // Set onClick Listener
+        findViewById(R.id.btn_set).setOnClickListener(this);
+        findViewById(R.id.btn_cancel).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
 
-        EditText etTitle = findViewById(R.id.et_title);
+        EditText editText = findViewById(R.id.et_title);
         TimePicker timePicker = findViewById(R.id.time_Picker);
 
-        Intent i = new Intent(MainActivity.this, AlarmReceiver.class);
-        i.putExtra("notificationId", notificationId);
-        i.putExtra("Message", etTitle.getText().toString());
+        // Intent
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        intent.putExtra("notificationId", notificationId);
+        intent.putExtra("message", editText.getText().toString());
 
-
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(
-                MainActivity.this, 0, i, PendingIntent.FLAG_CANCEL_CURRENT
+        // PendingIntent
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                MainActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT
         );
 
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        // AlarmManager
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 
         switch (view.getId()) {
             case R.id.btn_set:
                 int hour = timePicker.getCurrentHour();
                 int minute = timePicker.getCurrentMinute();
 
+                // Create time.
                 Calendar startTime = Calendar.getInstance();
                 startTime.set(Calendar.HOUR_OF_DAY, hour);
                 startTime.set(Calendar.MINUTE, minute);
                 startTime.set(Calendar.SECOND, 0);
-
                 long alarmStartTime = startTime.getTimeInMillis();
 
-                Toast.makeText(MainActivity.this, "Done!", Toast.LENGTH_LONG).show();
+                // Set Alarm
+                alarmManager.set(AlarmManager.RTC_WAKEUP, alarmStartTime, pendingIntent);
+                Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
                 break;
-
 
             case R.id.btn_cancel:
-                alarmManager.cancel(alarmIntent);
-                Toast.makeText(MainActivity.this, "Canceled", Toast.LENGTH_LONG).show();
+                alarmManager.cancel(pendingIntent);
+                Toast.makeText(this, "Canceled.", Toast.LENGTH_SHORT).show();
                 break;
         }
+
     }
 }
