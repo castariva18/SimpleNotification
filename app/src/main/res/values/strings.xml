@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Notification App</string>
+    <string name="title">Title....</string>
+    <string name="set">Set</string>
+    <string name="cancel">Cancel</string>
 </resources>
